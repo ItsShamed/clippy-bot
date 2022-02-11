@@ -32,7 +32,7 @@ client.on('messageCreate', async (message) => {
   }
   else {
 
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch();
     console.log(`It has ${message.attachments.size} attachments. Launching puppeteer...`)
 
     let validAttachments = message.attachments.filter(
