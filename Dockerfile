@@ -3,15 +3,52 @@ FROM node:16
 # Install latest chrome dev package and fonts to support major charsets (Chinese, Japanese, Arabic, Hebrew, Thai and a few others)
 # Note: this installs the necessary libs to make the bundled version of Chromium that Puppeteer
 # installs, work.
-RUN apt-get update \
-  && apt-get install -y wget gnupg \
-  && wget https://dl-ssl.google.com/linux/linux_signing_key.pub && apt-key add linux_signing_key.pub \
-  && rm linux_signing_key.pub \
-  && sh -c 'echo "deb [arch=aarch64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-  && apt-get update \
-  && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
-  --no-install-recommends \
-  && rm -rf /var/lib/apt/lists/*
+WORKDIR /puppeteer
+# RUN apt-get update \
+#   && apt-get install -y wget gnupg \
+#   && wget https://dl-ssl.google.com/linux/linux_signing_key.pub && apt-key add linux_signing_key.pub \
+#   && rm linux_signing_key.pub \
+#   && sh -c 'echo "deb [arch=aarch64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+#   && apt-get update \
+#   && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
+#   --no-install-recommends \
+#   && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get install -y \
+  chromium \
+  fonts-liberation \
+  gconf-service \
+  libappindicator1 \
+  libasound2 \
+  libatk1.0-0 \
+  libcairo2 \
+  libcups2 \
+  libfontconfig1 \
+  libgbm-dev \
+  libgdk-pixbuf2.0-0 \
+  libgtk-3-0 \
+  libicu-dev \
+  libjpeg-dev \
+  libnspr4 \
+  libnss3 \
+  libpango-1.0-0 \
+  libpangocairo-1.0-0 \
+  libpng-dev \
+  libx11-6 \
+  libx11-xcb1 \
+  libxcb1 \
+  libxcomposite1 \
+  libxcursor1 \
+  libxdamage1 \
+  libxext6 \
+  libxfixes3 \
+  libxi6 \
+  libxrandr2 \
+  libxrender1 \
+  libxss1 \
+  libxtst6 \
+  xdg-utils
+
 
 # If running Docker >= 1.13.0 use docker run's --init arg to reap zombie processes, otherwise
 # uncomment the following lines to have `dumb-init` as PID 1
@@ -22,13 +59,13 @@ RUN apt-get update \
 # Uncomment to skip the chromium download when installing puppeteer. If you do,
 # you'll need to launch puppeteer with:
 #     browser.launch({executablePath: 'google-chrome-stable'})
-# ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 # Install puppeteer so it's available in the container.
 
+RUN npm i && npm i puppeteer
 RUN ls -la
 
-WORKDIR /home/pptruser/clippy-bot
 COPY ./ /home/pptruser/clippy-bot/
 
 RUN groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
@@ -38,7 +75,6 @@ RUN groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
 # && chown -R pptruser:pptruser /package.json \
 # && chown -R pptruser:pptruser /package-lock.json
 
-RUN npm i && npm i puppeteer
 
 # Run everything after as non-privileged user.
 USER pptruser
