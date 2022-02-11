@@ -60,16 +60,17 @@ RUN apt-get update && apt-get install -y \
 # you'll need to launch puppeteer with:
 #     browser.launch({executablePath: 'google-chrome-stable'})
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+COPY ./ /puppeteer
 
 # Install puppeteer so it's available in the container.
 
 RUN npm i && npm i puppeteer
 RUN ls -la
 
-COPY ./ /home/pptruser/clippy-bot/
 
 RUN groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
   && mkdir -p /home/pptruser/Downloads \
+  && chown -R pptruser:pptruser /puppeteer \
   && chown -R pptruser:pptruser /home/pptruser
 # && chown -R pptruser:pptruser /node_modules \
 # && chown -R pptruser:pptruser /package.json \
