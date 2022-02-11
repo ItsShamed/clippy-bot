@@ -19,6 +19,7 @@
   "homepage": "https://github.com/ItsShamed/clippy-bot#readme",
   "dependencies": {
     "discord.js": "^13.6.0",
-    "erlpack": "^0.1.4"
+    "erlpack": "^0.1.4",
+    "puppeteer": "^13.3.1"
   }
 }

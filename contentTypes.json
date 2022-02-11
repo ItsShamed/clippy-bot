@@ -1,0 +1,59 @@
+{
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+    "type": "Microsoft Word Document",
+    "viewers": [
+      {
+        "name": "Microsoft Office Web",
+        "baseUrl": "https://view.officeapps.live.com/op/view.aspx?src={0}"
+      },
+      {
+        "name": "Google Drive",
+        "baseUrl": "https://drive.google.com/viewer?url={0}"
+      }
+    ]
+  },
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+    "type": "Microsoft Excel Spreadsheet",
+    "viewers": [
+      {
+        "name": "Microsoft Office Web",
+        "baseUrl": "https://view.officeapps.live.com/op/view.aspx?src={0}"
+      },
+      {
+        "name": "Google Drive",
+        "baseUrl": "https://drive.google.com/viewer?url={0}"
+      }
+    ]
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation": {
+    "type": "Microsoft PowerPoint Presentation",
+    "viewers": [
+      {
+        "name": "Microsoft Office Web",
+        "baseUrl": "https://view.officeapps.live.com/op/view.aspx?src={0}"
+      },
+      {
+        "name": "Google Drive",
+        "baseUrl": "https://drive.google.com/viewer?url={0}"
+      }
+    ]
+  },
+  "application/pdf": {
+    "type": "Portable Document Format (PDF)",
+    "viewers": [
+      {
+        "name": "Google Drive",
+        "baseUrl": "https://drive.google.com/viewer?url={0}"
+      }
+    ]
+  },
+  "application/vnd.oasis.opendocument.text": {
+    "type": "OpenOffice Document",
+    "viewers": [
+      {
+        "name": "Microsoft Office Web",
+        "baseUrl": "https://view.officeapps.live.com/op/view.aspx?src={0}"
+      }
+    ]
+  }
+}
