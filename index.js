@@ -1,4 +1,6 @@
-const { Client, Intents, MessageEmbed, Message } = require("discord.js");
+const { Client, Intents, MessageEmbed, Message, MessageAttachment } = require("discord.js");
+const { getScreenshot } = require('./screenshot');
+const puppeteer = require('puppeteer')
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]
@@ -18,7 +20,7 @@ client.once('ready', () => {
   console.log('Bot is connected.');
 });
 
-client.on('messageCreate', (message) => {
+client.on('messageCreate', async (message) => {
 
   if (message.author.id === client.user.id)
     return;
@@ -30,16 +32,19 @@ client.on('messageCreate', (message) => {
   }
   else {
 
-    console.log(`It has ${message.attachments.size} attachments which are:`)
+    const browser = await puppeteer.launch({ headless: false });
+    console.log(`It has ${message.attachments.size} attachments. Launching puppeteer...`)
 
     let validAttachments = message.attachments.filter(
       a => contentTypes[a.contentType] != undefined);
+    console.log(`${validAttachments.size} valid attachments.`)
     let reply = {
       content: `Detected ${validAttachments.size} attachments`,
-      embeds: []
+      embeds: [],
+      files: []
     }
 
-    validAttachments.forEach(attachment => {
+    await Promise.all(validAttachments.map(async (attachment) => {
 
       let embed = new MessageEmbed();
 
@@ -48,10 +53,19 @@ client.on('messageCreate', (message) => {
       if (contentTypes[attachment.contentType] != undefined) {
 
         let contentType = contentTypes[attachment.contentType];
+        let data =
+          await getScreenshot(
+            browser,
+            contentType.viewers[0].baseUrl.format(attachment.url),
+            5
+          );
+        if (data != undefined)
+          reply.files.push(data);
 
         embed.setFooter({
           text: contentType.type
         }).setTitle(attachment.name)
+          .setURL(attachment.url)
           .setDescription('Click the links below to open the file in your ' +
             'browser');
 
@@ -68,7 +82,10 @@ client.on('messageCreate', (message) => {
 
       }
       reply.embeds.push(embed);
-    });
+    }));
+
+    console.log('Closing puppeteer...')
+    browser.close();
 
     if (validAttachments.size > 0) {
       message.reply(reply);
