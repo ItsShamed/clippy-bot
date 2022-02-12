@@ -33,7 +33,7 @@ client.on('messageCreate', async (message) => {
   else {
 
     const browser = await puppeteer.launch({
-      args: ['--disable-dev-shm-usage'],
+      args: ['--disable-dev-shm-usage', '--no-sandbox'],
       executablePath: '/usr/bin/chromium'
     });
     console.log(`It has ${message.attachments.size} attachments. Launching puppeteer...`)
