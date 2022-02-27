@@ -38,6 +38,10 @@ client.on('messageCreate', async (message) => {
     });
     console.log(`It has ${message.attachments.size} attachments. Launching puppeteer...`)
 
+    message.attachments.forEach(attachment => {
+      console.log(` - ${attachment.name} (${attachment.contentType})`);
+    });
+
     let validAttachments = message.attachments.filter(
       a => contentTypes[a.contentType] != undefined);
     console.log(`${validAttachments.size} valid attachments.`)
@@ -51,7 +55,6 @@ client.on('messageCreate', async (message) => {
 
       let embed = new MessageEmbed();
 
-      console.log(` - ${attachment.name} (${attachment.contentType})`);
 
       if (contentTypes[attachment.contentType] != undefined) {
 
