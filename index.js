@@ -53,6 +53,8 @@ client.on('messageCreate', async (message) => {
 
     await Promise.all(validAttachments.map(async (attachment) => {
 
+      await message.channel.sendTyping();
+
       let embed = new MessageEmbed();
 
 
