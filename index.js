@@ -28,7 +28,7 @@ client.on('messageCreate', async (message) => {
 
   console.log(`Message received from ${message.author.username}.`);
 
-  let messageLinks = Array.from(message.content.matchAll(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g), m => m[0]);
+  let messageLinks = [...message.content.matchAll(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g), m => m[0]];
   console.log(`${messageLinks.size} links`)
 
   let linkContentTypes = [];
