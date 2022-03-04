@@ -1,6 +1,7 @@
 const { Client, Intents, MessageEmbed, Message, MessageAttachment } = require("discord.js");
 const { getScreenshot } = require('./screenshot');
 const puppeteer = require('puppeteer')
+const https = require('https');
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]
@@ -27,7 +28,8 @@ client.on('messageCreate', async (message) => {
 
   console.log(`Message received from ${message.author.username}.`);
 
-  if (message.attachments.size <= 0) {
+  let messageLinks = Array.from(message.content.matchAll(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/), m => m[0]);
+  if (message.attachments.size <= 0 && messageLinks.length <= 0) {
     console.log("It has no attachments.")
   }
   else {
@@ -44,7 +46,26 @@ client.on('messageCreate', async (message) => {
 
     let validAttachments = message.attachments.filter(
       a => contentTypes[a.contentType] != undefined);
+
     console.log(`${validAttachments.size} valid attachments.`)
+
+    let linkContentTypes = [];
+
+    let validLinks = messageLinks.filter(l => {
+      let isValid;
+      https.get(l, resp => {
+
+        if (contentTypes[resp.headers['content-type']] != undefined) {
+          linkContentTypes.push(resp.headers['content-type']);
+          return true;
+        }
+        return false;
+      });
+      return isValid;
+    })
+
+    console.log(`It has ${validLinks.length} valid links.`)
+    validLinks.forEach(link => console.log(` - ${link}`))
     let reply = {
       content: `Detected ${validAttachments.size} attachments`,
       embeds: [],
