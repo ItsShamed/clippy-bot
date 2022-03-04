@@ -12,4 +12,3 @@ echo "Removing Clippy container"; set -x
 (docker rm clippy && set +x; echo "Removed Clippy container") || set +x; echo "Failed to remove Clippy container (already removed?)"
 echo "Rebuilding Docker image..."; set -x
 (docker build -t clippy-bot . && set +x; echo "clippy-bot Docker image built!") || set +x; echo "Failed to rebuild Docker image"
-echo "Starting a new Clippy container..."; set -x
