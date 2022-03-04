@@ -8,7 +8,7 @@
       },
       {
         "name": "Google Drive",
-        "baseUrl": "https://drive.google.com/viewer?url={0}"
+        "baseUrl": "https://drive.google.com/viewerng/viewer?url={0}"
       }
     ]
   },
@@ -21,7 +21,7 @@
       },
       {
         "name": "Google Drive",
-        "baseUrl": "https://drive.google.com/viewer?url={0}"
+        "baseUrl": "https://drive.google.com/viewerng/viewer?url={0}"
       }
     ]
   },
@@ -34,7 +34,7 @@
       },
       {
         "name": "Google Drive",
-        "baseUrl": "https://drive.google.com/viewer?url={0}"
+        "baseUrl": "https://drive.google.com/viewerng/viewer?url={0}"
       }
     ]
   },
@@ -47,7 +47,7 @@
       },
       {
         "name": "Google Drive",
-        "baseUrl": "https://drive.google.com/viewer?url={0}"
+        "baseUrl": "https://drive.google.com/viewerng/viewer?url={0}"
       }
     ]
   },
@@ -60,7 +60,7 @@
       },
       {
         "name": "Google Drive",
-        "baseUrl": "https://drive.google.com/viewer?url={0}"
+        "baseUrl": "https://drive.google.com/viewerng/viewer?url={0}"
       }
     ]
   },
@@ -73,7 +73,7 @@
       },
       {
         "name": "Google Drive",
-        "baseUrl": "https://drive.google.com/viewer?url={0}"
+        "baseUrl": "https://drive.google.com/viewerng/viewer?url={0}"
       }
     ]
   },
@@ -82,7 +82,7 @@
     "viewers": [
       {
         "name": "Google Drive",
-        "baseUrl": "https://drive.google.com/viewer?url={0}"
+        "baseUrl": "https://drive.google.com/viewerng/viewer?url={0}"
       }
     ]
   },
