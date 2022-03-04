@@ -2,6 +2,7 @@ const { Client, Intents, MessageEmbed, Message, MessageAttachment } = require("d
 const { getScreenshot } = require('./screenshot');
 const puppeteer = require('puppeteer')
 const https = require('https');
+const axios = require('axios').default;
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]
@@ -17,34 +18,52 @@ String.prototype.format = function() {
 };
 
 
+async function getFileType(uri) {
+  return axios.head(uri).then(response => response.headers['content-type']);
+}
+
 client.once('ready', () => {
   console.log('Bot is connected.');
 });
 
 client.on('messageCreate', async (message) => {
 
+  console.log(message.content);
+  console.log(typeof (message.content))
+
   if (message.author.id === client.user.id)
     return;
 
   console.log(`Message received from ${message.author.username}.`);
 
-  let messageLinks = [...message.content.matchAll(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g)];
+  let messageLinks = Array.from(message.content.matchAll(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g), m => m[0]);
   console.log(`${messageLinks.length} links`)
+  console.log(messageLinks);
 
-  let linkContentTypes = [];
+  let linkContentTypes = {};
 
-  let validLinks = messageLinks.filter(l => {
-    let isValid;
-    https.get(l, resp => {
+  // let validLinks = messageLinks.filter(l => {
+  //   let isValid;
+  //   https.get(l, resp => {
 
-      if (contentTypes[resp.headers['content-type']] != undefined) {
-        linkContentTypes.push({ [l]: resp.headers['content-type'] });
-        return true;
-      }
-      return false;
-    });
-    return isValid;
-  })
+  //     if (contentTypes[resp.headers['content-type']] != undefined) {
+  //       linkContentTypes.push({ [l]: resp.headers['content-type'] });
+  //       return true;
+  //     }
+  //     return false;
+  //   });
+  //   return isValid;
+  // })
+
+  let validLinks = [];
+  for (let link of messageLinks) {
+    console.log(typeof (link));
+    let type = await getFileType(link);
+    if (contentTypes[type] != undefined) {
+      validLinks.push(link);
+      linkContentTypes[link] = type;
+    };
+  }
 
   console.log(`It has ${validLinks.length} valid links.`)
   validLinks.forEach(link => console.log(` - ${link}`))
@@ -68,7 +87,8 @@ client.on('messageCreate', async (message) => {
 
     console.log(`${validAttachments.size} valid attachments.`)
     let reply = {
-      content: `Detected ${validAttachments.size} attachments`,
+      content: `Detected ${validAttachments.size} attachments`
+        + ` and ${validLinks.length} links`,
       embeds: [],
       files: []
     }
@@ -105,13 +125,12 @@ client.on('messageCreate', async (message) => {
             `[Click here](${viewer.baseUrl.format(attachment.url)})`,
             true
           );
-
+          reply.embeds.push(embed);
         });
       }
       else {
 
       }
-      reply.embeds.push(embed);
     }));
 
     await Promise.all(validLinks.map(async (link) => {
@@ -119,7 +138,7 @@ client.on('messageCreate', async (message) => {
 
       if (contentTypes[linkContentTypes[link]] != undefined) {
 
-        let contentType = contentTypes[attachment.contentType];
+        let contentType = contentTypes[linkContentTypes[link]];
         let data =
           await getScreenshot(
             browser,
@@ -144,6 +163,7 @@ client.on('messageCreate', async (message) => {
           );
 
         });
+        reply.embeds.push(embed);
       }
     }));
 
@@ -154,6 +174,7 @@ client.on('messageCreate', async (message) => {
       message.reply(reply);
     }
   }
+  console.log("Message handled");
 });
 
 client.login(process.env.CLIPPY_TOKEN);
