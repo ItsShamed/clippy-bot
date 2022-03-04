@@ -29,7 +29,7 @@ client.on('messageCreate', async (message) => {
   console.log(`Message received from ${message.author.username}.`);
 
   let messageLinks = [...message.content.matchAll(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g)];
-  console.log(`${messageLinks.size} links`)
+  console.log(`${messageLinks.length} links`)
 
   let linkContentTypes = [];
 
@@ -150,7 +150,7 @@ client.on('messageCreate', async (message) => {
     console.log('Closing puppeteer...')
     browser.close();
 
-    if (validAttachments.size > 0 || validLinks.size > 0) {
+    if (validAttachments.size > 0 || validLinks.length > 0) {
       message.reply(reply);
     }
   }
