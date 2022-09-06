@@ -19,7 +19,11 @@ String.prototype.format = function() {
 
 
 async function getFileType(uri) {
-  return axios.head(uri).then(response => response.headers['content-type']);
+  try {
+    return axios.head(uri).then(response => response.headers['content-type']);
+  } catch (e) {
+    return undefined;
+  }
 }
 
 client.once('ready', () => {
