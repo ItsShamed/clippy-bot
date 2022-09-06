@@ -103,12 +103,20 @@ client.on('messageCreate', async (message) => {
       if (contentTypes[attachment.contentType] != undefined) {
 
         let contentType = contentTypes[attachment.contentType];
-        let data =
-          await getScreenshot(
+        let data;
+
+        try {
+          data = await getScreenshot(
             browser,
             contentType.viewers[0].baseUrl.format(attachment.url),
             5
           );
+        } catch (e) {
+          console.error("Failed to get screenshot:");
+          console.error(e);
+          return;
+        }
+
         if (data != undefined)
           reply.files.push(data);
 
