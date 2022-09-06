@@ -19,9 +19,12 @@ String.prototype.format = function() {
 
 
 async function getFileType(uri) {
+  console.log("Trying to fetch url type")
   try {
     return axios.head(uri).then(response => response.headers['content-type']);
   } catch (e) {
+    console.error("Failed to fetch url content-type.");
+    console.error(e);
     return undefined;
   }
 }
