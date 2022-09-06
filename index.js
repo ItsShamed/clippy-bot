@@ -21,7 +21,11 @@ String.prototype.format = function() {
 async function getFileType(uri) {
   console.log("Trying to fetch url type")
   try {
-    return axios.head(uri).then(response => response.headers['content-type']);
+    return axios.head(uri, { maxRedirects: 8 }).then(response => response.headers['content-type']).catch((e) => {
+      console.error("Failed to fetch url content-type:");
+      console.error(e);
+      return undefined;
+    });
   } catch (e) {
     console.error("Failed to fetch url content-type.");
     console.error(e);
@@ -63,13 +67,17 @@ client.on('messageCreate', async (message) => {
   // })
 
   let validLinks = [];
-  for (let link of messageLinks) {
-    console.log(typeof (link));
-    let type = await getFileType(link);
-    if (contentTypes[type] != undefined) {
-      validLinks.push(link);
-      linkContentTypes[link] = type;
-    };
+  try {
+    for (let link of messageLinks) {
+      console.log(typeof (link));
+      let type = await getFileType(link);
+      if (contentTypes[type] != undefined) {
+        validLinks.push(link);
+        linkContentTypes[link] = type;
+      };
+    }
+  } catch (e) {
+    message.reply("Unable to open one of the provided links.");
   }
 
   console.log(`It has ${validLinks.length} valid links.`)
